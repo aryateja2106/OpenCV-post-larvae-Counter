@@ -1,0 +1,17 @@
+pandas
+numpy
+matplotlib
+transformers
+tensorflow
+torch
+pyyaml =5.1
+roboflow
+-e .
+scikit-learn
+dvc
+mlflow
+streamlit
+supervision
+opencv-python
+Pillow
+watchdog
