@@ -216,3 +216,6 @@ build/
 
 # Mobile model outputs
 outputs_mobile/
+
+# Logs
+logs/
