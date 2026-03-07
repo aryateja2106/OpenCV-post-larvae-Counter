@@ -101,3 +101,87 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+## iOS App (ShrimpCounter)
+
+### Overview
+The iOS app brings shrimp larvae counting directly to your iPhone, enabling hatchery operators and seed-buying farmers to count larvae on-site without needing a laptop or server. The app uses a lightweight MobileNetV3-based detector (~15MB) that runs entirely on-device via CoreML.
+
+### Architecture
+```
+┌─────────────────────────────────────────────┐
+│  Python Training Pipeline (Server/Cloud)    │
+│  ┌──────────┐  ┌──────────┐  ┌───────────┐ │
+│  │ Data     │→ │Lightweight│→ │ CoreML    │ │
+│  │ Pipeline │  │ Model    │  │ Export    │ │
+│  └──────────┘  └──────────┘  └───────────┘ │
+└────────────────────────┬────────────────────┘
+                         │ .mlpackage
+┌────────────────────────▼────────────────────┐
+│  iOS App (On-Device)                        │
+│  ┌──────────┐  ┌──────────┐  ┌───────────┐ │
+│  │ Camera / │→ │ CoreML   │→ │ Count &   │ │
+│  │ Gallery  │  │ Inference│  │ Display   │ │
+│  └──────────┘  └──────────┘  └───────────┘ │
+└─────────────────────────────────────────────┘
+```
+
+### Model Size Comparison
+| Model | Size | Backbone | Target |
+|-------|------|----------|--------|
+| Original (Faster R-CNN R50-FPN) | ~496 MB | ResNet-50 | Server/Desktop |
+| Lightweight (Faster R-CNN MobileNetV3) | ~15 MB | MobileNetV3-Large | iOS/Mobile |
+| Quantized (float16) | ~8 MB | MobileNetV3-Large | iOS/Mobile |
+
+### Training the Lightweight Model
+
+```bash
+# Train the lightweight MobileNetV3-based model
+python -c "
+from src.components.lightweight_model import train_lightweight_model, LightweightModelConfig
+# Use your existing dataset with the lightweight model
+config = LightweightModelConfig(NUM_EPOCHS=50, BATCH_SIZE=4)
+# train_lightweight_model(train_dataset, val_dataset, config)
+"
+```
+
+### Exporting to CoreML for iOS
+
+```bash
+# Export trained model to CoreML format
+python -m src.export.coreml_export \
+    --weights outputs_mobile/model_mobile.pth \
+    --output ios/ShrimpCounter/ShrimpCounter/Models/ShrimpDetector.mlpackage \
+    --format coreml
+
+# Or export to ONNX (cross-platform)
+python -m src.export.coreml_export \
+    --weights outputs_mobile/model_mobile.pth \
+    --output outputs_mobile/model.onnx \
+    --format onnx
+```
+
+### Building the iOS App
+
+1. **Prerequisites**: macOS with Xcode 15+ and an Apple Developer account.
+
+2. **Export the model**: Run the CoreML export script above to generate the `.mlpackage` file.
+
+3. **Open the project**:
+   ```bash
+   open ios/ShrimpCounter/ShrimpCounter.xcodeproj
+   ```
+
+4. **Add the CoreML model**: Drag the exported `.mlpackage` file into the `Models` group in Xcode.
+
+5. **Build and run**: Select your target device and press ⌘R.
+
+### iOS App Features
+- **Camera Capture**: Take photos directly for immediate counting
+- **Gallery Import**: Select existing photos from the photo library
+- **On-Device Inference**: All processing happens locally (no internet needed)
+- **Sliding Window**: Handles high-resolution images via tile-based detection
+- **NMS Merging**: Deduplicates overlapping detections across tiles
+- **CLAHE Enhancement**: Automatic contrast optimization for larvae visibility
+- **Real-time Results**: Count, confidence scores, and processing time displayed instantly
+
+

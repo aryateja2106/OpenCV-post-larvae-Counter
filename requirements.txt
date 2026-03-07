@@ -4,6 +4,7 @@ matplotlib
 transformers
 tensorflow
 torch
+torchvision
 pyyaml =5.1
 roboflow
 -e .
@@ -15,3 +16,5 @@ supervision
 opencv-python
 Pillow
 watchdog
+coremltools
+onnx

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera access is needed to capture images of shrimp larvae for counting.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo library access is needed to select images of shrimp larvae for counting.</string>
+	<key>CFBundleDisplayName</key>
+	<string>Shrimp Counter</string>
+	<key>UILaunchScreen</key>
+	<dict/>
+</dict>
+</plist>
