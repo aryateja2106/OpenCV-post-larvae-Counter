@@ -16,8 +16,8 @@ class LightweightModelConfig:
     """Configuration for the lightweight MobileNet-based detection model.
 
     This model is designed for mobile/edge deployment, reducing the model
-    size from ~496MB (Faster R-CNN R50-FPN) to ~15MB while maintaining
-    competitive accuracy for shrimp larvae detection.
+    size from ~496MB (Faster R-CNN R50-FPN) to ~72MB (~36MB quantized)
+    while maintaining competitive accuracy for shrimp larvae detection.
     """
     NUM_CLASSES: int = 2  # background + shrimp_larva
     INPUT_SIZE: Tuple[int, int] = (640, 640)

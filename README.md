@@ -129,8 +129,8 @@ The iOS app brings shrimp larvae counting directly to your iPhone, enabling hatc
 | Model | Size | Backbone | Target |
 |-------|------|----------|--------|
 | Original (Faster R-CNN R50-FPN) | ~496 MB | ResNet-50 | Server/Desktop |
-| Lightweight (Faster R-CNN MobileNetV3) | ~15 MB | MobileNetV3-Large | iOS/Mobile |
-| Quantized (float16) | ~8 MB | MobileNetV3-Large | iOS/Mobile |
+| Lightweight (Faster R-CNN MobileNetV3) | ~72 MB | MobileNetV3-Large | iOS/Mobile |
+| Quantized (float16) | ~36 MB | MobileNetV3-Large | iOS/Mobile |
 
 ### Training the Lightweight Model
 

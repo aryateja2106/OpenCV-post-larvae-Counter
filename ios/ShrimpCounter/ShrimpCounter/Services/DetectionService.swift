@@ -155,7 +155,15 @@ class DetectionService: ObservableObject {
         overlap: Double
     ) -> [CGRect] {
         var tiles: [CGRect] = []
-        let step = Int(Double(tileSize) * (1.0 - overlap))
+        let step = max(1, Int(Double(tileSize) * (1.0 - overlap)))
+
+        // If image is smaller than tile size, use a single tile
+        if imageWidth <= tileSize && imageHeight <= tileSize {
+            tiles.append(CGRect(
+                x: 0, y: 0, width: imageWidth, height: imageHeight
+            ))
+            return tiles
+        }
 
         var y = 0
         while y < imageHeight {
@@ -165,16 +173,28 @@ class DetectionService: ObservableObject {
             while x < imageWidth {
                 let tileW = min(tileSize, imageWidth - x)
                 tiles.append(CGRect(x: x, y: y, width: tileW, height: tileH))
-                x += step
-                if x + step > imageWidth && x < imageWidth {
-                    x = imageWidth - tileSize
-                    if x < 0 { x = 0 }
+
+                let nextX = x + step
+                if nextX >= imageWidth {
+                    break
+                }
+                // Ensure the last tile covers the edge
+                if nextX + tileSize > imageWidth {
+                    x = max(x + 1, imageWidth - tileSize)
+                } else {
+                    x = nextX
                 }
             }
-            y += step
-            if y + step > imageHeight && y < imageHeight {
-                y = imageHeight - tileSize
-                if y < 0 { y = 0 }
+
+            let nextY = y + step
+            if nextY >= imageHeight {
+                break
+            }
+            // Ensure the last tile covers the bottom edge
+            if nextY + tileSize > imageHeight {
+                y = max(y + 1, imageHeight - tileSize)
+            } else {
+                y = nextY
             }
         }
 
